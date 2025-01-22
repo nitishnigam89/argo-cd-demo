@@ -20,4 +20,4 @@ spec:
       securityContext:
         privileged: true
         runAsUser: 0
-      serviceAccountName: nginx
+      serviceAccountName: nginx-sa
