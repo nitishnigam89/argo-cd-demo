@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: demo-argocd
+  namespace: openshift-gitops
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: 'demo-argocd-{{cluster}}'
+    spec:
+      project: devops
+      source:
+        repoURL: https://github.com/nitishnigam89/argo-cd-demo.git
+        targetRevision: HEAD
+        path: development
+      destination:
+        server: '{{url}}'
+        namespace: demo-argocd
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+        retry:
+          limit: 2
+          backoff:
+            duration: "5s"
+            factor: 2
+            maxDuration: "3m0s"
