@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: namespace-management
+  namespace: openshift-gitops
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: local
+        url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: 'namespace-management-{{cluster}}'
+    spec:
+      project: devops
+      source:
+        repoURL: https://github.com/nitishnigam89/argo-cd-demo.git
+        targetRevision: HEAD
+        path: namespaces-config
+      destination:
+        server: '{{url}}'
